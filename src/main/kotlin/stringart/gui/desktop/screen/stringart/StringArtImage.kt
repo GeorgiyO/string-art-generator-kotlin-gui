@@ -81,7 +81,10 @@ fun StringArtImage(
       if (lastLineColor != null) {
         val _segments = segments.toList()
         _segments.forEachExpectLast(gx::draw)
-        gx.draw(_segments.last(), lastLineColor)
+        val last = _segments.lastOrNull()
+        if (last != null) {
+          gx.draw(last, lastLineColor)
+        }
       } else {
         segments.forEach(gx::draw)
       }

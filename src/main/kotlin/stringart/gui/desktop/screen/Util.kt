@@ -1,7 +1,11 @@
 package stringart.gui.desktop.screen
 
+import androidx.compose.ui.graphics.toAwtImage
+import androidx.compose.ui.res.loadImageBitmap
+import stringart.gui.desktop.screen.stringart.RGB
 import java.awt.Image
 import java.awt.image.BufferedImage
+import kotlin.io.path.Path
 
 fun BufferedImage.resized(width: Int, height: Int): BufferedImage {
   println("<top>.resized")
@@ -69,3 +73,15 @@ private fun BufferedImage.move(
   return scaledImg
 }
 
+fun convertImageToDoubleArray(path: String, width: Int, height: Int): Array<DoubleArray> {
+  val file = Path(path).toFile()
+  if (file.exists().not()) {
+    return arrayOf()
+  }
+  val image = loadImageBitmap(file.inputStream()).toAwtImage().croppingResized(width, height)
+  return Array(image.width) { x ->
+    DoubleArray(image.height) { y ->
+      1.0 - RGB.ofPlain(image.getRGB(x, y)).grayscale()
+    }
+  }
+}

@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.em
 import nekogochan.stringart.math.linesegment.LineSegment
 import stringart.gui.desktop.AppState
 import stringart.gui.desktop.screen.components.IntInput
+import stringart.gui.desktop.screen.convertImageToDoubleArray
 import stringart.gui.desktop.screen.croppingResized
 import java.util.stream.Stream
 import kotlin.io.path.Path
@@ -19,13 +20,12 @@ import kotlin.streams.toList
 
 class StringArtState {
   val segments: MutableList<LineSegment> = mutableListOf()
-  var updatePeriod: Int = 100
-  var drawCount: Int = 1000
+  var updatePeriod: Int = 0
+  var drawCount: Int = 0
 }
 
 @Composable
 fun StringArtScreen(state: AppState) {
-  println("<top>.StringArtScreen")
   val connections = state.settings.connections
   val generator = state.generator
 
@@ -40,15 +40,11 @@ fun StringArtScreen(state: AppState) {
 
   DisposableEffect(null) {
     onDispose {
-      println("fuck call on dispose")
       state.stringArtState.apply {
         this.segments.clear()
         this.segments.addAll(segments)
         this.updatePeriod = updatePeriod
         this.drawCount = drawCount
-        println("segments ${segments.size}")
-        println("updatePeriod $updatePeriod")
-        println("drawCount $drawCount")
       }
     }
   }
@@ -72,7 +68,6 @@ fun StringArtScreen(state: AppState) {
             totalWeight = drawCount,
             weightPerIter = updatePeriod
           ) { count ->
-            println("SUKA $count")
             Stream.generate(generator::proceed)
               .limit(count.toLong())
               .toList()
@@ -97,19 +92,6 @@ fun StringArtScreen(state: AppState) {
       height = connections.height,
       strokeWidth = state.settings.strokeWidth
     )
-  }
-}
-
-private fun convertImageToDoubleArray(path: String, width: Int, height: Int): Array<DoubleArray> {
-  val file = Path(path).toFile()
-  if (file.exists().not()) {
-    return arrayOf()
-  }
-  val image = loadImageBitmap(file.inputStream()).toAwtImage().croppingResized(width, height)
-  return Array(image.width) { x ->
-    DoubleArray(image.height) { y ->
-      1.0 - RGB.ofPlain(image.getRGB(x, y)).grayscale()
-    }
   }
 }
 

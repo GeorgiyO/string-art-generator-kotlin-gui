@@ -15,28 +15,34 @@ import stringart.gui.desktop.screen.image.ImageScreen
 import stringart.gui.desktop.screen.image.ImageSetup
 import stringart.gui.desktop.screen.settings.SettingsScreen
 import stringart.gui.desktop.screen.settings.StringArtSettings
+import stringart.gui.desktop.screen.stepbystep.StepByStepScreen
 import stringart.gui.desktop.screen.stringart.StringArtScreen
 import stringart.gui.desktop.screen.stringart.StringArtState
 
 class AppState {
   val settings = StringArtSettings().apply {
-    strokeWidth = 0.1
+    strokeWidth = 0.2
     connections.apply {
-      height = 1000
-      width = 1000
-      count = 200
-      nailsRadius = 2.0
-      r = 490.0
-      distanceToNails = 3.0
+      height = 600
+      width = 600
+      count = 250
+      nailsRadius = 1.0
+      r = 290.0
+      distanceToNails = 1.0
     }
     processor.apply {
-      removeValue = 0.1
-      removeStep = 0.5
-      weightCalcStep = 3.0
+      removeValue = 0.06
+      removeStep = 0.1
+      weightCalcStep = 1.0
     }
   }
-  val imageSetup = ImageSetup()
-  val stringArtState = StringArtState()
+  val imageSetup = ImageSetup().apply {
+    filepath = "C:\\Users\\sgs08\\Pictures\\Anime-D184D18DD0BDD0B4D0BED0BCD18B-Kara-no-Kyoukai-Ryougi-Shiki-7214020.png"
+  }
+  val stringArtState = StringArtState().apply {
+    drawCount = 4000
+    updatePeriod = 500
+  }
   var generator = settings.convertToGenerator()
 }
 
@@ -48,7 +54,8 @@ fun App() {
     mapOf(
       "Settings" to @Composable { SettingsScreen(appState) },
       "Image" to @Composable { ImageScreen(appState) },
-      "StringArt" to @Composable { StringArtScreen(appState) }
+      "StringArt" to @Composable { StringArtScreen(appState) },
+      "Step-by-step drawer" to @Composable { StepByStepScreen(appState) }
     )
   )
   Column {

@@ -12,7 +12,7 @@ import stringart.gui.desktop.AppState
 import kotlin.io.path.Path
 
 class ImageSetup {
-  var filepath = "C:/Users/sgs08/Desktop/16573854315750.png"
+  var filepath = ""
 }
 
 @Composable
